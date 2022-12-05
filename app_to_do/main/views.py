@@ -14,6 +14,7 @@ from .models import (
 class ErrorView(generic.TemplateView):
 	template_name = "main/404.html"
 
+
 class BlankView(generic.TemplateView):
 	template_name = "main/blank.html"
 
@@ -110,3 +111,11 @@ class CreationTareasView(generic.FormView):
 		messages.success(self.request, 'Se creó de forma exitosa.')
 		return super().form_valid(form)
 
+def eliminarTareaView(request, id):
+	tarea = TaskModel.objects.get(id=id)
+	tarea.delete()
+
+	return redirect("../creacionTareas")
+
+
+	#//TODO Modificación

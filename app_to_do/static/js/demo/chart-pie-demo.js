@@ -2,15 +2,33 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
+//TODO Modificación
+
+//const contextInc = document.getElementById("porcEstInc");
+//let ProcInc = contextInc.textContent;
+
+//alert(contextInc);
+
+const valContextInc = document.querySelector("#porcEstInc");
+let ValProcInc = parseFloat(valContextInc.textContent);
+
+const valContextPro = document.querySelector("#porcEstPro");
+let ValProcPro = parseFloat(valContextPro.textContent);
+
+const valContextCom = document.querySelector("#porcEstCom");
+let ValProcCom = parseFloat(valContextCom.textContent);
+
+//alert(`${ValProcInc} ----- ${ValProcPro} ----- ${ValProcCom}`)
+
 // Pie Chart Example
 var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ["Direct", "Referral", "Social"],
+    labels: ["Incompleto", "Proceso", "Completado"],
     datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+      data: [ValProcInc, ValProcPro, ValProcCom],
+      backgroundColor: ['#e74a3b', '#f6c23e', '#1cc88a'],
       hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],

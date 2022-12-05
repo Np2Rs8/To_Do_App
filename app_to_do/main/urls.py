@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 
 
+#//TODO Modificación
 app_name = "main"
 
 urlpatterns = [
 
-    path('Error404/', views.ErrorView.as_view(), name="error"),
+    #path('Error404/', views.ErrorView.as_view(), name="error"),
     path('blank/', views.BlankView.as_view(), name="blank"),
     path('buttons/', views.ButtonsView.as_view(), name="button"),
     path('cards/', views.CardsView.as_view(), name="cards"),
@@ -28,5 +29,8 @@ urlpatterns = [
     path('creacionTareas/', login_required(views.CreationTareasView.as_view()), name="creacionTareas"),
 
 	path('logout/', views.LogoutUserView, name="logout"),
+
+    path('eliminarTarea/<int:id>', views.eliminarTareaView, name="eliminarTarea"),
 ]
+
 

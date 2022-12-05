@@ -567,8 +567,49 @@
                         </div>
 
 
+                        <div class="col-xl-5 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-danger"></i> Incompleto
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-warning"></i> Proceso
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> Completado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
 
-                        <div class="col-xl-4 col-lg-5"></div>
+
+                        <!-- <div class="col-xl-4 col-lg-5"></div> -->
 
 
 
@@ -621,6 +662,65 @@
                         </div>
                         -->
 
+                        <!-- Porcentaje de tareas código -->
+
+                        <script>
+                            let cantEstInc=0, cantEstPro=0, cantEstCom=0, cantTotal=0;
+                            let porcEstInc=0, porcEstPro=0, porcEstCom=0;
+                        </script>
+
+                        {% for t in lista_tareas %}
+                            {% if t.id_usuario == request.user.id %}
+
+                            <script>
+                                cantTotal = cantTotal + 1;
+                            </script>
+
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for t in lista_tareas %}
+                            {% if t.id_usuario == request.user.id %}
+                                {% if t.estado == "Incompleto" %}
+
+                                <script>
+                                    cantEstInc = cantEstInc+1;
+                                    if(cantTotal != 0) {
+                                        porcEstInc = ((cantEstInc / cantTotal) * 100).toFixed(2);
+                                    } else {
+                                        porcEstInc = 0;
+                                    }
+                                    //alert(`Incompleto: ${cantTotal} ----- ${cantEstInc} ===== ${porcEstInc}`);
+                                </script>
+
+                                {% elif t.estado == "Proceso" %}
+
+                                <script>
+                                    cantEstPro = cantEstPro+1;
+                                    if(cantTotal != 0) {
+                                        porcEstPro = ((cantEstPro / cantTotal) * 100).toFixed(2);
+                                    } else {
+                                        porcEstPro = 0;
+                                    }
+                                    //alert(`Proceso: ${cantTotal} ----- ${cantEstPro} ===== ${porcEstPro}`);
+                                </script>
+
+                                {% else %}
+
+                                <script>
+                                    cantEstCom = cantEstCom+1;
+                                    if(cantTotal != 0) {
+                                        porcEstCom = ((cantEstCom / cantTotal) * 100).toFixed(2);
+                                    } else {
+                                        porcEstCom = 0;
+                                    }
+                                    //alert(`Completo: ${cantTotal} ----- ${cantEstCom} ===== ${porcEstCom}`);
+                                </script>
+
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        
 
                         <div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
@@ -646,24 +746,52 @@
                                 <div class="card-body">
 
                                     <div class="progress mb-4">
-                                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 25%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b>25%</b></span></h4></div>
+                                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 0%" id="porcEstIncBar"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b id="porcEstInc"></b></span></h4></div>
                                     </div>
+
+                                    <script>
+                                        const barInc = document.getElementById("porcEstIncBar");
+                                        barInc.setAttribute(
+                                            "style",
+                                            `width: ${porcEstInc}%;`
+                                        )
+
+                                        const contextInc = document.getElementById("porcEstInc");
+                                        contextInc.textContent = porcEstInc + "%";
+                                    </script>
 
                                     {% for t in lista_tareas %}
                                         {% if t.id_usuario == request.user.id %}
                                             {% if t.estado == "Incompleto" %}
+
                                             <div class="card mb-4 py-0 border-left-danger border-bottom-danger">
                                                 <div class="card-body">
+
                                                     <p>
-                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br>
-                                                        <h4><b>{{ t.titulo }}</b></h4><br>
-                                                        <h6><u>{{ t.estado }}</u></h6>
+                                                        <!-- <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br> -->
+                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }}</p>
+                                                        <hr>
+                                                        <h4><b>{{ t.titulo }}</b></h4>
+                                                        <!-- <h6><u>{{ t.estado }}</u></h6> -->
                                                         <i>{{ t.descripcion }}</i><br>
-                                                        <s>{{ t.cuerpo|safe }}</s>
+                                                        <!-- <s>{{ t.cuerpo|safe }}</s> -->
+                                                        <hr>
                                                     </p>
+
+                                                    <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                                        <i class="fas fa-pen"></i>
+                                                    </a>
+                                                    <a href="../eliminarTarea/{{ t.id }}" class="btn btn-danger btn-circle btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+
                                                 </div>
                                             </div>
+
                                             {% endif %}
                                         {% endif %}
                                     {% endfor %}
@@ -672,6 +800,9 @@
                             </div>
                         </div>
 
+                        <!--
+                            //TODO Modifiación
+                        -->
 
                         <div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
@@ -697,9 +828,20 @@
                                 <div class="card-body">
                                     
                                     <div class="progress mb-4">
-                                        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 50%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b>50%</b></span></h4></div>
+                                        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 0%" id="porcEstProBar"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b id="porcEstPro"></b></span></h4></div>
                                     </div>
+
+                                    <script>
+                                        const barPro = document.getElementById("porcEstProBar");
+                                        barPro.setAttribute(
+                                            "style",
+                                            `width: ${porcEstPro}%;`
+                                        )
+
+                                        const contextPro = document.getElementById("porcEstPro");
+                                        contextPro.textContent = porcEstPro + "%";
+                                    </script>
 
                                     {% for t in lista_tareas %}
                                         {% if t.id_usuario == request.user.id %}
@@ -708,12 +850,26 @@
                                             <div class="card mb-4 py-0 border-left-warning border-bottom-warning">
                                                 <div class="card-body">
                                                     <p>
-                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br>
-                                                        <h4><b>{{ t.titulo }}</b></h4><br>
-                                                        <h6><u>{{ t.estado }}</u></h6>
+                                                        <!-- <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br> -->
+                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }}</p>
+                                                        <hr>
+                                                        <h4><b>{{ t.titulo }}</b></h4>
+                                                        <!-- <h6><u>{{ t.estado }}</u></h6> -->
                                                         <i>{{ t.descripcion }}</i><br>
-                                                        <s>{{ t.cuerpo|safe }}</s>
+                                                        <!-- <s>{{ t.cuerpo|safe }}</s> -->
+                                                        <hr>
                                                     </p>
+
+                                                    <a href="#" class="btn btn-warning btn-circle btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-warning btn-circle btn-sm">
+                                                        <i class="fas fa-pen"></i>
+                                                    </a>
+                                                    <a href="../eliminarTarea/{{ t.id }}" class="btn btn-warning btn-circle btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+
                                                 </div>
                                             </div>
 
@@ -750,9 +906,20 @@
                                 <div class="card-body">
                                     
                                     <div class="progress mb-4">
-                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b>100%</b></span></h4></div>
+                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%" id="porcEstComBar"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><span class="float-right" style="color: black;"><b id="porcEstCom"></b></span></h4></div>
                                     </div>
+
+                                    <script>
+                                        const barCom = document.getElementById("porcEstComBar");
+                                        barCom.setAttribute(
+                                            "style",
+                                            `width: ${porcEstCom}%;`
+                                        )
+
+                                        const contextCom = document.getElementById("porcEstCom");
+                                        contextCom.textContent = porcEstCom + "%";
+                                    </script>
 
                                     {% for t in lista_tareas %}
                                         {% if t.id_usuario == request.user.id %}
@@ -760,12 +927,26 @@
                                             <div class="card mb-4 py-0 border-left-success border-bottom-success">
                                                 <div class="card-body">
                                                     <p>
-                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br>
-                                                        <h4><b>{{ t.titulo }}</b></h4><br>
-                                                        <h6><u>{{ t.estado }}</u></h6>
+                                                        <!-- <p style="font-size: 9pt;">{{ t.timestamp|date }} Con ID {{ t.id_usuario }}</p><br> -->
+                                                        <p style="font-size: 9pt;">{{ t.timestamp|date }}</p>
+                                                        <hr>
+                                                        <h4><b>{{ t.titulo }}</b></h4>
+                                                        <!-- <h6><u>{{ t.estado }}</u></h6> -->
                                                         <i>{{ t.descripcion }}</i><br>
-                                                        <s>{{ t.cuerpo|safe }}</s>
+                                                        <!-- <s>{{ t.cuerpo|safe }}</s> -->
+                                                        <hr>
                                                     </p>
+
+                                                    <a href="#" class="btn btn-success btn-circle btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-success btn-circle btn-sm">
+                                                        <i class="fas fa-pen"></i>
+                                                    </a>
+                                                    <a href="../eliminarTarea/{{ t.id }}" class="btn btn-success btn-circle btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+
                                                 </div>
                                             </div>
                                             {% endif %}
@@ -805,13 +986,13 @@
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
+                                            <i class="fas fa-circle text-danger"></i> Incompleto
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
+                                            <i class="fas fa-circle text-warning"></i> Proceso
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
+                                            <i class="fas fa-circle text-success"></i> Completado
                                         </span>
                                     </div>
                                 </div>
