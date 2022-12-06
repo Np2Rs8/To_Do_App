@@ -90,12 +90,16 @@ def RegisterView(request):
 		return render(request, 'main/register.html', context)
 		
 
-class CreationTareasView(generic.FormView):
+class CreacionTareasView(generic.FormView):
 	template_name = "main/creacionTareas.html"
 	form_class = TaskForm
 
 
 	success_url = "../creacionTareas"
+	
+	
+	def get_queryset(self):
+		return super().get_queryset()
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -111,6 +115,7 @@ class CreationTareasView(generic.FormView):
 		messages.success(self.request, 'Se creó de forma exitosa.')
 		return super().form_valid(form)
 
+
 def eliminarTareaView(request, id):
 	tarea = TaskModel.objects.get(id=id)
 	tarea.delete()
@@ -118,4 +123,111 @@ def eliminarTareaView(request, id):
 	return redirect("../creacionTareas")
 
 
-	#//TODO Modificación
+class TareaDetailView(generic.DetailView):
+	model = TaskModel
+	form_class = TaskForm
+	template_name = "main/edicionTareas.html"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		
+		tareas = TaskModel.objects.all()
+		formulario = TaskForm
+		
+		context["tareas"] = tareas
+		context["formulario"] = formulario
+
+
+		return context
+
+
+
+
+
+
+
+"""
+def lecturaEdicionTareaView(request, id):
+
+	#CreationTareasView()
+
+	class CreationTareasView(generic.FormView):
+		template_name = "main/creacionTareas.html"
+		form_class = TaskForm
+
+
+		success_url = "../creacionTareas"
+		
+		def get_context_data(self, **kwargs):
+			context = super().get_context_data(**kwargs)
+			
+			lista_tareas = TaskModel.objects.all()
+			
+			context["lista_tareas"] = lista_tareas
+			return context
+
+		def form_valid(self, form):
+			
+			form.save()
+			messages.success(self.request, 'Se creó de forma exitosa.')
+			return super().form_valid(form)
+"""
+
+"""
+	tarea = TaskModel.objects.get(id=id)
+	datosTarea = {
+		'titulo': tarea.titulo,
+		'descripcion': tarea.descripcion,
+		'estado': tarea.estado,
+		'cuerpo': tarea.cuerpo
+	}
+
+	return render(request, "main/edicionTareas.html", datosTarea)
+"""
+
+"""
+class LecturaView(id):
+	template_name = "main/cedicionTareas.html"
+	form_class = TaskForm
+
+
+	success_url = "../edicionTareas"
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		
+		tarea = TaskModel.objects.get(id=id)
+		
+		context["tarea"] = tarea
+		return context
+"""
+
+
+"""
+class LecturaView(generic.FormView):
+	template_name = "main/creacionTareas.html"
+	form_class = TaskForm
+
+
+	success_url = "../creacionTareas"
+	
+	def lecturaEdicionTareaView(request, id):
+		tarea = TaskModel.objects.get(id=id)
+		datosTarea = {
+			'titulo': tarea.titulo,
+			'descripcion': tarea.descripcion,
+			'estado': tarea.estado,
+			'cuerpo': tarea.cuerpo
+		}
+		messages.success(request, 'Se cargó COOL.')
+
+		return render(request, "main/edicionTareas.html", datosTarea)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		
+		lista_tareas = TaskModel.objects.all()
+		
+		context["lista_tareas"] = lista_tareas
+		return context
+"""
